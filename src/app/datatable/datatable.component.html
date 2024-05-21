@@ -1,0 +1,103 @@
+<div class="container-fluid">
+  <div class="grid justify-content-center align-items-center text-center">
+    <div class="col-md-12">
+      <div class="flex-1 justify-content-center mt-5">
+        <p-table #bt [value]="recordsTable" dataKey="ilName" styleClass="p-datatable-striped" editMode="row" [tableStyle]="{'width': '90vw'}" [globalFilterFields]="['ilName']">
+          <ng-template pTemplate="caption">
+            <div class="flex">
+                <span class="p-input-icon-left ml-auto">
+                  <p-button (click)="showLog()" label="Tabloyu Kaydet" />
+                </span>
+            </div>
+        </ng-template>
+          <ng-template pTemplate="header">
+            <tr style="border-bottom: 1px solid #ccc;">
+              <th style="border-right: 1px solid #ccc;">İl<p-sortIcon field="ilName"></p-sortIcon></th>
+              <th style="border-right: 1px solid #ccc;">İlçe Kodu<p-sortIcon field="il_id"></p-sortIcon></th>
+              <th style="border-right: 1px solid #ccc;">İlçe<p-sortIcon field="ilceName"></p-sortIcon></th>
+              <th style="border-right: 1px solid #ccc;">Düzenle<p-sortIcon></p-sortIcon></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-records let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="records" style="border-bottom: 1px solid #ccc;">
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      appendTo="body"
+                      [(ngModel)]="records.ilName"
+                      (onChange)="selectedIl($event, records)"
+                      [filter]="true"
+                      placeholder="{{records.ilName}}"
+                      filterBy="ilName"
+                      [style]="{'width': '100%'}"
+                      [options]="il"
+                      optionLabel="ilName">
+                    </p-dropdown>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{records.ilName}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input pInputText type="number"  [(ngModel)]="records.il_id">
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{records.il_id}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="records.ilceName" (input)="toUpperCase(records,$event)">
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{records.ilceName | uppercase}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <div class="flex align-items-center justify-content-center gap-2">
+                  <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(records)" class="p-button-rounded p-button-text"></button>
+                  <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(records,ri)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                  <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(records, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>
+<p-toast></p-toast>
+
+<p-dialog
+    header="Kayıtlar"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true">
+        <pre>
+          {{ recordsJson | jsonPretty }}
+        </pre>
+</p-dialog>
+
+<p-dialog
+    header="Teknosol Case"
+    [modal]="true"
+    [(visible)]="visible1"
+    [style]="{ width: '90rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true">
+      <pre>
+        Verilen Casenin Çalışma stili;
+      1-Tablo Edit Edildiğinde Seçilen İlin İdsine Göre İlçe Kodu Alanı Doluyor ve İlçe Adınıda Seçilen İle Göre Bekliyor.
+      2-Tabloyu Kaydetmek İçin Tüm Alanların Doğru Şekilde Doldurulması Gerekiyor.
+      </pre>
+</p-dialog>
